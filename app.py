@@ -127,21 +127,4 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text=reply_text)
     )
-    
-       with ApiClient(configuration) as api_client:
-        line_bot_api = MessagingApi(api_client)
-
-        line_bot_api.reply_message(
-            ReplyMessageRequest(
-                reply_token=event.reply_token,
-                messages=[
-                    TextMessage(
-                        text=reply_text
-                    )
-                ]
-            )
-        )
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+  
