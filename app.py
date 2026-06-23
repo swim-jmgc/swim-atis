@@ -111,7 +111,15 @@ def handle_message(event):
         if len(airport) == 4 and (airport.startswith("RJ") or airport.startswith("RO")):
 
             # ここは後で本物のSWIM API呼び出しに変更
-            reply_text = get_atis(airport)
+            result = get_atis(airport)
+
+　　　　if "ATISデータなし" in result:
+    reply_text = (
+        "空港コードを入力してください\n"
+        "取得できるのはSWIM提供空港のみです。"
+    )
+　　　　else:
+    reply_text = result
 
         else:
             reply_text = (
