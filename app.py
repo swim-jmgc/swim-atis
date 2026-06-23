@@ -31,6 +31,9 @@ def test_atis(icao):
     result = get_atis(icao)
     return result.replace("\n", "<br>")
 
+def get_atis(icao):
+    return f"{icao} のATIS取得テストOK"
+
 @app.route("/callback", methods=["POST"])
 def callback():
     signature = request.headers["X-Line-Signature"]
