@@ -108,7 +108,7 @@ def handle_message(event):
     airport = event.message.text.strip().upper()
 
     try:
-        if len(airport) == 4 and airport.startswith("RJ"):
+        if len(airport) == 4:
 
             # ここは後で本物のSWIM API呼び出しに変更
             reply_text = get_atis(airport)
