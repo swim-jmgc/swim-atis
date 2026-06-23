@@ -73,7 +73,8 @@ def get_atis(icao):
         return f"HTTP={atis_res.status_code}"
 
     data = atis_res.json()
-
+    return str(data)
+    
     error_code = data["error_info"][0]["error_code"]
 
     if error_code != "0":
