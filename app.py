@@ -42,6 +42,18 @@ def get_atis(icao):
     }
 
     response = requests.post(url, json=payload, timeout=10)
+
+    return f"""
+STATUS={response.status_code}
+
+HEADERS=
+{response.headers}
+
+BODY=
+{response.text[:1000]}
+"""
+
+    response = requests.post(url, json=payload, timeout=10)
     data = response.json()
 
     atis = data["ret"]["atisInfoDTO"]["fltxDataInfList"][0]
