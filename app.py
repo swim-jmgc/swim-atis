@@ -25,6 +25,12 @@ handler = WebhookHandler(CHANNEL_SECRET)
 def home():
     return "SWIM LINE BOT OK"
 
+@app.route("/test/<icao>")
+def test_atis(icao):
+    icao = icao.upper()
+    result = get_atis(icao)
+    return result.replace("\n", "<br>")
+
 @app.route("/callback", methods=["POST"])
 def callback():
     signature = request.headers["X-Line-Signature"]
