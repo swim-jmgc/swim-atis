@@ -79,7 +79,7 @@ def get_atis(icao):
     if error_code != "0":
         return f"ATIS取得エラー: code={error_code}"
 
-    atis_list = data["data"][0].get("atisinfo", [])
+    atis_list = data["data"][0].get("atisInfo", [])
 
     if not atis_list:
         return f"{icao} のATISデータなし"
