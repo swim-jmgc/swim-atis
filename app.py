@@ -89,7 +89,7 @@ def get_atis(icao):
 
     return f"[{icao} ATIS]\n\n{atis}"
     
-  @app.route("/callback", methods=["POST"])
+@app.route("/callback", methods=["POST"])
 def callback():
     signature = request.headers["X-Line-Signature"]
     body = request.get_data(as_text=True)
