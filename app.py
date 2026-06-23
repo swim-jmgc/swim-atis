@@ -113,13 +113,13 @@ def handle_message(event):
             # ここは後で本物のSWIM API呼び出しに変更
             result = get_atis(airport)
 
-       if "ATISデータなし" in result:
-           reply_text = (
-        "空港コードを入力してください\n"
-        "取得できるのはSWIM提供空港のみです。"
-    )
-　　    else:
-    reply_text = result
+            if "ATISデータなし" in result:
+                reply_text = (
+                    "空港コードを入力してください\n"
+                    "取得できるのはSWIM提供空港のみです。"
+                )
+            else:
+                reply_text = result
 
         else:
             reply_text = (
