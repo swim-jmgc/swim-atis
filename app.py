@@ -32,8 +32,24 @@ def test_atis(icao):
     return result.replace("\n", "<br>")
 
 def get_atis(icao):
-    return f"{icao} のATIS取得テストOK"
+    url = "https://web.swim.mlit.go.jp/f2atrq/web/FLV402/LGV062"
 
+    payload = {
+        "searchConditionsDTO": {
+            "dispcnt": "1",
+            "locationList": [icao]
+        }
+    }
+
+    response = requests.post(url, json=payload, timeout=10)
+    data = response.json()
+
+    atis = data["ret"]["atisInfoDTO"]["fltxDataInfList"][0]
+
+    atis = atis.replace("¥n", "\n").replace("\\n", "\n")
+    atis = atis.replace("¥r", "").replace("\\r", "")
+
+    return f"[{icao} ATIS]\n\n{atis}"
 @app.route("/callback", methods=["POST"])
 def callback():
     signature = request.headers["X-Line-Signature"]
