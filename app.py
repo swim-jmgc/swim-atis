@@ -70,7 +70,16 @@ atis_res = session.get(
     )
 
     if atis_res.status_code != 200:
-        return f"ATIS取得失敗: HTTP {atis_res.status_code}"
+    return f"""HTTP={atis_res.status_code}
+
+URL={atis_res.url}
+
+HEADERS=
+{atis_res.headers}
+
+BODY=
+{atis_res.text[:1000]}
+"""
 
     data = atis_res.json()
 
