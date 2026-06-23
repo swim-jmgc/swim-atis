@@ -128,10 +128,7 @@ def handle_message(event):
         TextSendMessage(text=reply_text)
     )
     
-    except Exception as e:
-        reply_text = f"エラー: {str(e)}"
-
-    with ApiClient(configuration) as api_client:
+       with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
 
         line_bot_api.reply_message(
