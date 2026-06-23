@@ -105,28 +105,28 @@ def callback():
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
 
-    airport = event.message.text.strip().upper()
+    text = event.message.text.strip().upper()
+    airports = text.replace(",", " ").split()
 
     try:
-        if len(airport) == 4 and (airport.startswith("RJ") or airport.startswith("RO")):
+        if len(airports) == 0 or len(airports) > 3:
+            reply_text = "空港コードは1〜3個まで入力してください\n例:\nRJAA RJTT ROAH"
 
-            # ここは後で本物のSWIM API呼び出しに変更
-            result = get_atis(airport)
+        elif all(len(code) == 4 and code[:2] in ["RJ", "RO"] for code in airports):
+            results = []
 
-            if "ATISデータなし" in result:
-                reply_text = (
-                    "空港コードを入力してください\n"
-                    "取得できるのはSWIM提供空港のみです。"
-                )
-            else:
-                reply_text = result
+            for code in airports:
+                result = get_atis(code)
+
+                if "ATISデータなし" in result:
+                    results.append(f"[{code}]\n空港コードを入力してください")
+                else:
+                    results.append(result)
+
+            reply_text = "\n\n----------------\n\n".join(results)
 
         else:
-            reply_text = (
-                "空港コードを入力してください\n"
-                "取得できるのはSWIMで提供される下記の空港のみです。\n"
-                
-            )
+            reply_text = "空港コードを入力してください\n例:\nRJAA RJTT ROAH"
 
     except Exception as e:
         reply_text = f"エラー: {str(e)}"
