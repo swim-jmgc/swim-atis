@@ -26,9 +26,7 @@ def home():
     return "SWIM LINE BOT OK"
 
 @app.route("/test/<icao>")
-def get_atis(icao):
-
-    return "LOGIN TEST"
+def test_atis(icao):
     icao = icao.upper()
     result = get_atis(icao)
     return result.replace("\n", "<br>")
