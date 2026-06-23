@@ -55,7 +55,7 @@ def handle_message(event):
         if len(airport) == 4 and airport.startswith("RJ"):
 
             # ここは後で本物のSWIM API呼び出しに変更
-            reply_text = f"{airport} のATIS取得機能を準備中"
+            reply_text = get_atis(airport)
 
         else:
             reply_text = (
