@@ -88,9 +88,7 @@ def get_atis(icao):
     atis = atis.replace("¥r", "").replace("\\r", "")
 
     return f"[{icao} ATIS]\n\n{atis}"
-        }
-    }
-
+    
     response = requests.post(url, json=payload, timeout=10)
 
     return f"""
