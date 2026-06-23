@@ -34,12 +34,60 @@ def get_atis(icao):
     return result.replace("\n", "<br>")
 
 def get_atis(icao):
-    url = "https://web.swim.mlit.go.jp/f2atrq/web/FLV402/LGV062"
+    swim_id = os.environ["SWIM_ID"]
+    swim_password = os.environ["SWIM_PASSWORD"]
 
-    payload = {
-        "searchConditionsDTO": {
-            "dispcnt": "1",
-            "locationList": [icao]
+    session = requests.Session()
+
+    # 1. ログインしてCookie取得
+    login_url = "https://top.swim.mlit.go.jp/swim/webapi/login"
+    login_payload = {
+        "id": swim_id,
+        "password": swim_password
+    }
+
+    login_res = session.post(
+        login_url,
+        json=login_payload,
+        headers={"Content-Type": "application/json"},
+        timeout=10
+    )
+
+    if login_res.status_code != 200:
+        return f"SWIMログイン失敗: HTTP {login_res.status_code}"
+
+    # 2. ATIS取得
+    atis_url = "https://web.swim.mlit.go.jp/f2atrq/web/FLV402001"
+
+    atis_res = session.get(
+        atis_url,
+        params={
+            "location": icao,
+            "dispcnt": "1"
+        },
+        timeout=10
+    )
+
+    if atis_res.status_code != 200:
+        return f"ATIS取得失敗: HTTP {atis_res.status_code}"
+
+    data = atis_res.json()
+
+    error_code = data["error_info"][0]["error_code"]
+
+    if error_code != "0":
+        return f"ATIS取得エラー: code={error_code}"
+
+    atis_list = data["data"][0].get("atisinfo", [])
+
+    if not atis_list:
+        return f"{icao} のATISデータなし"
+
+    atis = atis_list[0]
+    atis = atis.replace("¥n", "\n").replace("\\n", "\n")
+    atis = atis.replace("¥r", "").replace("\\r", "")
+
+    return f"[{icao} ATIS]\n\n{atis}"
         }
     }
 
