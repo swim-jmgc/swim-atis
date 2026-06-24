@@ -208,7 +208,7 @@ def handle_message(event):
             airport_code = parts[0]
             mode = "ATIS"
 
-            if len(parts) == 2:
+            if len(parts) >= 2:
                 mode = parts[1]
 
             if len(airport_code) != 4:
