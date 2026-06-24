@@ -146,16 +146,35 @@ def get_notam(icao):
         return f"[{icao} NOTAM]\n\nerror_code={error_code}"
 
     notams = data["data"]["digitalNotam"]
+    total = data["data"]["totalCount"]
 
-    result = f"[{icao} NOTAM]\n\n"
-
+    result = f"[{icao} NOTAM]\n全{total}件中 最新3件を表示\n\n"
+    
     for notam in notams[:3]:
-        start = notam.find("<event:text>")
-        end = notam.find("</event:text>")
+        num_start = notam.find("<event:number>")
+        num_end = notam.find("</event:number>")
 
-        if start != -1 and end != -1:
-            result += notam[start+12:end]
-            result += "\n\n----------------\n\n"
+        year_start = notam.find("<event:year>")
+        year_end = notam.find("</event:year>")
+
+        series_start = notam.find("<event:series>")
+        series_end = notam.find("</event:series>")
+
+        notam_no = (
+            notam[series_start+14:series_end]
+            + notam[num_start+14:num_end]
+            + "/"
+            + notam[year_start+12:year_end][-2:]
+        )
+
+    result += f"{notam_no}\n"
+    
+    start = notam.find("<event:text>")
+    end = notam.find("</event:text>")
+
+    if start != -1 and end != -1:
+        result += notam[start+12:end]
+        result += "\n\n----------------\n\n"
 
     return result
    
