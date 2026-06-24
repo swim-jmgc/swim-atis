@@ -89,7 +89,9 @@ def get_atis(icao):
     atis = atis.replace("¥r", "").replace("\\r", "")
 
     return f"[{icao} ATIS]\n\n{atis}"
-    
+    def get_notam(icao):
+        return f"[{icao} NOTAM]\n\nNOTAM取得機能テスト中"
+
 @app.route("/callback", methods=["POST"])
 def callback():
     signature = request.headers["X-Line-Signature"]
@@ -105,36 +107,47 @@ def callback():
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
     user_text = event.message.text.strip().upper()
-    airport_codes = user_text.replace(",", " ").split()
+    parts = user_text.replace(",", " ").split()
 
     try:
-        if len(airport_codes) == 0 or len(airport_codes) > 3:
-            reply_text = "空港コードは1～3個で入力してください。\n例：RJAA RJSS ROAH"
+        if len(parts) == 0:
+            reply_text = "空港コードを入力してください。\n例：RJSS"
+
+        elif len(parts) > 2:
+            reply_text = "入力形式を確認してください。\n例：RJSS / RJSS NOTAM / RJSS ALL"
 
         else:
-            results = []
+            airport_code = parts[0]
+            mode = "ATIS"
 
-            for airport_code in airport_codes:
+            if len(parts) == 2:
+                mode = parts[1]
 
-                if len(airport_code) != 4:
-                    results.append(f"{airport_code}\n空港コードを4文字で入力してください。")
-                    continue
+            if len(airport_code) != 4:
+                reply_text = "空港コードを4文字で入力してください。\n例：RJSS"
 
-                if airport_code[:2] not in ["RJ", "RO"]:
-                    results.append(f"{airport_code}\n空港コードを入力してください。")
-                    continue
+            elif airport_code[:2] not in ["RJ", "RO"]:
+                reply_text = "空港コードを入力してください。\n例：RJSS"
 
-                result = get_atis(airport_code)
+            elif mode == "ATIS":
+                reply_text = get_atis(airport_code)
 
-                if "ATISデータなし" in result:
-                    results.append(f"{airport_code}\nATISデータなし")
-                else:
-                    results.append(result)
+            elif mode == "NOTAM":
+                reply_text = get_notam(airport_code)
 
-            reply_text = "\n\n".join(results)
+            elif mode == "ALL":
+                atis_text = get_atis(airport_code)
+                notam_text = get_notam(airport_code)
+                reply_text = atis_text + "\n\n----------------\n\n" + notam_text
+
+            else:
+                reply_text = "入力形式を確認してください。\n例：RJSS / RJSS NOTAM / RJSS ALL"
 
     except Exception as e:
         reply_text = "エラーが発生しました。もう一度試してください。"
+
+    if len(reply_text) > 4800:
+        reply_text = reply_text[:4800] + "\n\n※文字数制限のため途中まで表示しています。"
 
     with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
