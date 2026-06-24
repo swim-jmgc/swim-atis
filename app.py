@@ -147,7 +147,10 @@ def get_notam(icao):
 
     notam = data["data"]["digitalNotam"][0]
 
-    return notam[:3000]
+    if "Event" in notam:
+        return "NOTAM XML取得成功"
+
+    return "Eventなし"
 
 @app.route("/callback", methods=["POST"])
 
