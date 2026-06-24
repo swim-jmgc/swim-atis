@@ -147,9 +147,9 @@ def get_notam(icao):
 
     notam = data["data"]["digitalNotam"][0]
 
-    pos = notam.find("Event")
+    pos = notam.find("NOTAM")
 
-    return notam[pos:pos+1500]
+    return notam[pos:pos+2000]
    
 @app.route("/callback", methods=["POST"])
 
