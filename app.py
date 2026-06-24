@@ -145,12 +145,19 @@ def get_notam(icao):
     if error_code != "0":
         return f"[{icao} NOTAM]\n\nerror_code={error_code}"
 
-    notam = data["data"]["digitalNotam"][0]
+    notams = data["data"]["digitalNotam"]
 
-    start = notam.find("<event:text>")
-    end = notam.find("</event:text>")
+    result = f"[{icao} NOTAM]\n\n"
 
-    return notam[start+12:end]
+    for notam in notams[:3]:
+        start = notam.find("<event:text>")
+        end = notam.find("</event:text>")
+
+    if start != -1 and end != -1:
+        result += notam[start+12:end]
+        result += "\n\n----------------\n\n"
+
+return result
    
 @app.route("/callback", methods=["POST"])
 
