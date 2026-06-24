@@ -144,8 +144,8 @@ def handle_message(event):
                 reply_text = "入力形式を確認してください。\n例：RJSS / RJSS NOTAM / RJSS ALL"
 
     except Exception as e:
-        reply_text = "エラーが発生しました。もう一度試してください。"
-
+        reply_text = f"エラー: {str(e)}"
+    
     if len(reply_text) > 4800:
         reply_text = reply_text[:4800] + "\n\n※文字数制限のため途中まで表示しています。"
 
