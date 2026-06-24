@@ -167,14 +167,14 @@ def get_notam(icao):
             + notam[year_start+12:year_end][-2:]
         )
 
-    result += f"{notam_no}\n"
+        result += f"{notam_no}\n"
     
-    start = notam.find("<event:text>")
-    end = notam.find("</event:text>")
+        start = notam.find("<event:text>")
+        end = notam.find("</event:text>")
 
-    if start != -1 and end != -1:
-        result += notam[start+12:end]
-        result += "\n\n----------------\n\n"
+        if start != -1 and end != -1:
+            result += notam[start+12:end]
+            result += "\n\n----------------\n\n"
 
     return result
    
