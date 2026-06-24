@@ -91,7 +91,59 @@ def get_atis(icao):
     return f"[{icao} ATIS]\n\n{atis}"
     
 def get_notam(icao):
-    return f"[{icao} NOTAM]\n\nNOTAM取得機能テスト中"
+    swim_id = os.environ["SWIM_ID"]
+    swim_password = os.environ["SWIM_PASSWORD"]
+
+    session = requests.Session()
+
+    login_url = "https://top.swim.mlit.go.jp/swim/webapi/login"
+
+    login_payload = {
+        "id": swim_id,
+        "password": swim_password
+    }
+
+    login_res = session.post(
+        login_url,
+        json=login_payload,
+        headers={"Content-Type": "application/json"},
+        timeout=10
+    )
+
+    if login_res.status_code != 200:
+        return f"SWIMログイン失敗: HTTP {login_res.status_code}"
+
+    notam_url = "https://web.swim.mlit.go.jp/f2dnrq/web/search"
+
+    notam_res = session.get(
+        notam_url,
+        params={
+            "userId": swim_id,
+            "location": icao,
+            "display": "0"
+        },
+        headers={
+            "Cookie": login_res.headers.get("Set-Cookie", "")
+        },
+        timeout=20
+    )
+
+    if notam_res.status_code != 200:
+        return f"NOTAM取得失敗 HTTP={notam_res.status_code}"
+
+    data = notam_res.json()
+
+    error_code = str(data["error_info"]["error_code"])
+
+    if error_code == "1":
+        return f"[{icao} NOTAM]\n\n該当NOTAMなし"
+
+    if error_code != "0":
+        return f"[{icao} NOTAM]\n\nerror_code={error_code}"
+
+    total = data["data"][0]["totalCount"]
+
+    return f"[{icao} NOTAM]\n\n取得件数: {total}件"
 
 @app.route("/callback", methods=["POST"])
 
