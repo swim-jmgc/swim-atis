@@ -120,15 +120,16 @@ def handle_message(event):
             if "ATISデータなし" in reply_text:
                 reply_text = "空港コードを入力してください。"
 
-    except Exception as e:
-        reply_text = "エラーが発生しました。もう一度試してください。"
-     with ApiClient(configuration) as api_client:
-        line_bot_api = MessagingApi(api_client)
-        line_bot_api.reply_message(
-            ReplyMessageRequest(
-                reply_token=event.reply_token,
-                messages=[
-                    TextMessage(text=reply_text)
-                ]
-            )
-        )
+except Exception as e:
+    reply_text = "エラーが発生しました。もう一度試してください。"
+
+with ApiClient(configuration) as api_client:
+line_bot_api = MessagingApi(api_client)
+line_bot_api.reply_message(
+    ReplyMessageRequest(
+        reply_token=event.reply_token,
+        messages=[
+            TextMessage(text=reply_text)
+        ]
+    )
+)    
