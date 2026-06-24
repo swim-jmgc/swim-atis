@@ -137,7 +137,7 @@ def get_notam(icao):
 
     data = notam_res.json()
 
-    error_code = str(data["error_info"]["error_code"])
+    error_code = str(data["error_info"][0]["error_code"])
 
     if error_code == "1":
         return f"[{icao} NOTAM]\n\n該当NOTAMなし"
