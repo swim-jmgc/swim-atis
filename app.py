@@ -91,7 +91,7 @@ def get_atis(icao):
     return f"[{icao} ATIS]\n\n{atis}"
     
     def get_notam(icao):
-    return f"[{icao} NOTAM]\n\nNOTAM取得機能テスト中"
+        return f"[{icao} NOTAM]\n\nNOTAM取得機能テスト中"
 
 @app.route("/callback", methods=["POST"])
 
