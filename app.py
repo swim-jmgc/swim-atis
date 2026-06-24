@@ -148,8 +148,11 @@ def get_notam(icao, all_mode=False):
     notams = data["data"]["digitalNotam"]
     total = data["data"]["totalCount"]
 
-    result = f"[{icao} NOTAM]\n全{total}件中 最新3件を表示\n\n"
-
+    if all_mode:
+        result = f"[{icao} NOTAM]\n全{total}件を表示\n\n"
+    else:
+        result = f"[{icao} NOTAM]\n全{total}件中 最新3件を表示\n\n"
+        
     target = notams if all_mode else notams[:3]
     for notam in target:
         num_start = notam.find("<event:number>")
