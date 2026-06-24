@@ -153,11 +153,11 @@ def get_notam(icao):
         start = notam.find("<event:text>")
         end = notam.find("</event:text>")
 
-    if start != -1 and end != -1:
-        result += notam[start+12:end]
-        result += "\n\n----------------\n\n"
+        if start != -1 and end != -1:
+            result += notam[start+12:end]
+            result += "\n\n----------------\n\n"
 
-return result
+    return result
    
 @app.route("/callback", methods=["POST"])
 
