@@ -145,7 +145,8 @@ def get_notam(icao):
     if error_code != "0":
         return f"[{icao} NOTAM]\n\nerror_code={error_code}"
 
-    return str(data)
+    total = data["data"]["totalCount"]
+        return f"[{icao} NOTAM]\n\n取得件数: {total}件"
 
 @app.route("/callback", methods=["POST"])
 
