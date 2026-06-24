@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 import os
 import requests
+from datetime import datetime, timedelta
 
 from linebot.v3 import WebhookHandler
 from linebot.v3.messaging import (
@@ -114,14 +115,17 @@ def get_notam(icao):
         return f"SWIMログイン失敗: HTTP {login_res.status_code}"
 
     notam_url = "https://web.swim.mlit.go.jp/f2dnrq/web/search"
+    valid_end = (datetime.utcnow() + timedelta(days=30)).strftime("%Y%m%d%H%M")
 
     notam_res = session.get(
         notam_url,
         params={
             "userId": swim_id,
             "location": icao,
-            "display": "0"
+            "display": "0",
+            "validDatetimeEnd": valid_end
         },
+        
         headers={
             "Cookie": login_res.headers.get("Set-Cookie", "")
         },
