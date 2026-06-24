@@ -89,10 +89,12 @@ def get_atis(icao):
     atis = atis.replace("¥r", "").replace("\\r", "")
 
     return f"[{icao} ATIS]\n\n{atis}"
+    
     def get_notam(icao):
-        return "NOTAM TEST SUCCESS"
+    return f"[{icao} NOTAM]\n\nNOTAM取得機能テスト中"
 
 @app.route("/callback", methods=["POST"])
+
 def callback():
     signature = request.headers["X-Line-Signature"]
     body = request.get_data(as_text=True)
