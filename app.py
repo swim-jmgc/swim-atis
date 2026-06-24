@@ -91,7 +91,7 @@ def get_atis(icao):
 
     return f"[{icao} ATIS]\n\n{atis}"
     
-def get_notam(icao):
+def get_notam(icao, all_mode=False):
     swim_id = os.environ["SWIM_ID"]
     swim_password = os.environ["SWIM_PASSWORD"]
 
@@ -149,8 +149,9 @@ def get_notam(icao):
     total = data["data"]["totalCount"]
 
     result = f"[{icao} NOTAM]\n全{total}件中 最新3件を表示\n\n"
-    
-    for notam in notams[:3]:
+
+    target = notams if all_mode else notams[:3]
+    for notam in target:
         num_start = notam.find("<event:number>")
         num_end = notam.find("</event:number>")
 
@@ -200,7 +201,7 @@ def handle_message(event):
         if len(parts) == 0:
             reply_text = "空港コードを入力してください。\n例：RJSS"
 
-        elif len(parts) > 2:
+        elif len(parts) > 3:
             reply_text = "入力形式を確認してください。\n例：RJSS / RJSS NOTAM / RJSS ALL"
 
         else:
@@ -220,8 +221,11 @@ def handle_message(event):
                 reply_text = get_atis(airport_code)
 
             elif mode == "NOTAM":
-                reply_text = get_notam(airport_code)
-
+                if len(parts) == 3 and parts[2] == "ALL":
+                    reply_text = get_notam(airport_code, all_mode=True)
+                else:
+                    reply_text = get_notam(airport_code)
+      
             elif mode == "ALL":
                 atis_text = get_atis(airport_code)
                 notam_text = get_notam(airport_code)
