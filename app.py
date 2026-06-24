@@ -122,9 +122,13 @@ def handle_message(event):
 
     except Exception as e:
         reply_text = "エラーが発生しました。もう一度試してください。"
-
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_text)
-    )
-  
+     with ApiClient(configuration) as api_client:
+        line_bot_api = MessagingApi(api_client)
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                reply_token=event.reply_token,
+                messages=[
+                    TextMessage(text=reply_text)
+                ]
+            )
+        )
