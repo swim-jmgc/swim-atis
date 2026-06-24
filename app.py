@@ -104,20 +104,34 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    airport_code = event.message.text.strip().upper()
+    user_text = event.message.text.strip().upper()
+    airport_codes = user_text.replace(",", " ").split()
 
     try:
-        if len(airport_code) != 4:
-            reply_text = "空港コードを4文字で入力してください。\n例：RJAA"
-
-        elif airport_code[:2] not in ["RJ", "RO"]:
-            reply_text = "空港コードを入力してください。\n例：RJAA"
+        if len(airport_codes) == 0 or len(airport_codes) > 3:
+            reply_text = "空港コードは1～3個で入力してください。\n例：RJAA RJSS ROAH"
 
         else:
-            reply_text = get_atis(airport_code)
+            results = []
 
-            if "ATISデータなし" in reply_text:
-                reply_text = "空港コードを入力してください。"
+            for airport_code in airport_codes:
+
+                if len(airport_code) != 4:
+                    results.append(f"{airport_code}\n空港コードを4文字で入力してください。")
+                    continue
+
+                if airport_code[:2] not in ["RJ", "RO"]:
+                    results.append(f"{airport_code}\n空港コードを入力してください。")
+                    continue
+
+                result = get_atis(airport_code)
+
+                if "ATISデータなし" in result:
+                    results.append(f"{airport_code}\nATISデータなし")
+                else:
+                    results.append(result)
+
+            reply_text = "\n\n".join(results)
 
     except Exception as e:
         reply_text = "エラーが発生しました。もう一度試してください。"
