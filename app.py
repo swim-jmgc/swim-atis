@@ -26,6 +26,10 @@ handler = WebhookHandler(CHANNEL_SECRET)
 def home():
     return "SWIM LINE BOT OK"
 
+@app.route("/health")
+def health():
+    return "OK"
+    
 @app.route("/test/<icao>")
 def test_atis(icao):
     icao = icao.upper()
